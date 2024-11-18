@@ -1,1 +1,2 @@
-# cse580-mx
+# CSE 580 - Class project
+
