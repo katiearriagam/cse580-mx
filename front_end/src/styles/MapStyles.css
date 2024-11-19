@@ -1,0 +1,147 @@
+/* styles/MapApp.css */
+.app-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
+  }
+  
+  .nav-bar {
+    background-color: white;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .nav-content {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    height: 4rem;
+  }
+  
+  .nav-links {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-link {
+    color: #1f2937;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  
+  .nav-link:hover {
+    color: #4b5563;
+  }
+  
+  .home-content {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .home-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+  }
+  
+  .home-description {
+    margin-top: 1rem;
+    color: #4b5563;
+  }
+  
+  .map-page-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .map-page-container {
+      padding: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .map-page-container {
+      padding: 2rem;
+    }
+  }
+  
+  .map-content {
+    max-width: 80rem;
+    margin: 0 auto;
+  }
+  
+  .map-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .map-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .map-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  
+  .map-subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+  
+  .map-body {
+    padding: 1rem;
+  }
+  
+  .map-wrapper {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .legend-card {
+    margin-top: 1.5rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+  }
+  
+  .legend-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .legend-dot {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: #ef4444;
+  }
+  
+  .legend-label {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
