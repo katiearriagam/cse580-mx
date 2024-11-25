@@ -1,8 +1,13 @@
 import json
-import sys
+import sys, os
 import logging
 import requests
 from dotenv import dotenv_values
+
+sys.path.append(os.path.join(sys.path[0], '..'))
+# sys.path.append(os.path.join(sys.path[0], '../..'))
+
+from db_storage import get_conn
 
 config = dotenv_values(".env")
 
@@ -47,6 +52,7 @@ def query_news_api(name):
         "includeArticleOriginalArticle": True,
         "apiKey": NEWS_API_KEY
     }))
+    logger.debug(res.text)
     res.raise_for_status()
     logger.info(f'-- {res.status_code}')
     result = res.json()
@@ -116,9 +122,20 @@ def run_pipeline():
     for name in LIST_OF_NAMES:
         process_name(name)
 
+def test_db_connection():
+    query = 'SELECT * FROM femicides_mexico;'
+    acs = config['AZURE_SQL_CONNECTIONSTRING']
+    rows = []
+    with get_conn(acs) as conn:
+        cursor = conn.cursor()
+        cursor.execute(query)
+        for row in cursor.fetchall():
+            print(row)
+
 
 def main():
-    run_pipeline()
+    # run_pipeline()
+    test_db_connection()
     logger.info('Done')
 
 if __name__ == '__main__':
