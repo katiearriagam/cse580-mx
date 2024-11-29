@@ -74,28 +74,35 @@ def query_news_api(name):
 # Returns an array with the articles that are not already stored
 def filter_existing_articles(articles):
     ARTICLES_TABLE_NAME = 'articles'
+    # connect to the database
     acs = config['AZURE_SQL_CONNECTIONSTRING']
     db_articles = set() 
+    # store the id of all the newly fetched articles
     new_articles = set([x["id"] for x in articles])
     with get_conn(acs) as conn:
         cursor = conn.cursor()
+        # get all the articles form the articles table
         cursor.execute(f"select id from {ARTICLES_TABLE_NAME}")
         for row in cursor.fetchall():
             id = row[0]
             db_articles.add(id)
-    net_new_articles_id = new_articles - db_articles   
+    # get the set of all the articles fetched that do not currently
+    # exist in the database (the net new articles)
+    net_new_articles_id = new_articles - db_articles
+    # return the net new articles   
     return [article for article in articles if article["id"] in net_new_articles_id]
 
 # Store news API
 def store_news_articles(articles):
-    # create a new entry in the DB for a new article
-    # construct the composite key for each row
+    # get the list of the articles fetched that do not yet exist in the database
     net_new_articles = filter_existing_articles(articles)
     ARTICLES_TABLE_NAME = 'articles'
     acs = config['AZURE_SQL_CONNECTIONSTRING']
+    # store the net new articles in the database
     with get_conn(acs) as conn:
         cursor = conn.cursor()
         for article in net_new_articles:
+            # create a new entry in the DB for a new article
             cursor.execute(f"insert into {ARTICLES_TABLE_NAME}(id, victim_name, title, publication_date, source, body) values (?, ?, ?, ?, ?, ?);", article["id"], article["name"], article["title"], article["publication_date"], article["source"], article["body"])
         conn.commit()
     logger.info(f'Inserted {len(net_new_articles)} rows to the table.')
