@@ -108,11 +108,20 @@ def store_news_articles(articles):
     logger.info(f'Inserted {len(net_new_articles)} rows to the table.')
 
 
-# Query DB for rest of news
+# Query DB for news articles associated with a case
 def fetch_articles_from_db(name):
     # query the DB to retrieve the news article
-    TABLE_NAME = 'articles'
-    pass
+    ARTICLES_TABLE_NAME = 'articles'
+    acs = config['AZURE_SQL_CONNECTIONSTRING']
+    db_articles = []
+    with get_conn(acs) as conn:
+        cursor = conn.cursor()
+        # create a new entry in the DB for a new article
+        cursor.execute(f"SELECT title, body, publication_date FROM {ARTICLES_TABLE_NAME} WHERE victim_name = ?;", name)
+        for row in cursor.fetchall():
+            db_articles.append({"title": row[0], "body": row[1], "date_published": row[2].isoformat()})
+    logger.info(f'Found {len(db_articles)} articles for the case of {name}.')
+    logger.info(json.dumps(db_articles, ensure_ascii=False))
 
 # Extract info with GPT
 def process_data(name, articles):
@@ -165,7 +174,8 @@ def test_db_connection():
 
 
 def main():
-    run_pipeline()
+    fetch_articles_from_db('Bertha Guadalupe Cipriano')
+    # run_pipeline()
     logger.info('Done')
 
 if __name__ == '__main__':
