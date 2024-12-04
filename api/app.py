@@ -25,7 +25,6 @@ def get_cases_from_db():
     result = []
     with get_conn() as conn:
         cursor = conn.cursor()
-        # get all the articles form the articles table
         cursor.execute(query)
         for row in cursor.fetchall():
             result.append(
