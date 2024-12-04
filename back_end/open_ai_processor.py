@@ -1,14 +1,14 @@
 import logging
+import os
+import sys
 
 import requests
-from dotenv import dotenv_values
+
+sys.path.append(os.path.join(sys.path[0], '..'))
+
+from secrets import get_secret
 
 from config import auto_config as config
-
-
-def get_openai_secret():
-    return config['OPEN_AI_API_KEY']
-
 
 logger = logging.getLogger('cse580-process-data')
 
@@ -17,7 +17,7 @@ class OpenAIProcessor:
     domain = config['OPEN_AI_API_BASE']
     model_name = config['OPEN_AI_DEPLOYMENT_NAME']
     api_version = config['OPEN_AI_API_VERSION']
-    api_key = get_openai_secret()
+    api_key = get_secret('cse580-oaikey')
 
     endpoint = f'{domain}/openai/deployments/{model_name}/chat/completions?api-version={api_version}'
 

@@ -5,17 +5,14 @@ import sys
 from typing import Dict
 
 import requests
-from dotenv import dotenv_values
 
 sys.path.append(os.path.join(sys.path[0], '..'))
 # sys.path.append(os.path.join(sys.path[0], '../..'))
 
-from back_end.open_ai_processor import OpenAIProcessor
+from secrets import get_secret
 
-from config import auto_config as config2
 from db_storage import get_conn
-
-config = dotenv_values('.env')
+from open_ai_processor import OpenAIProcessor
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s: %(message)s')
 logger = logging.getLogger('cse580-process-data')
@@ -28,7 +25,7 @@ def query_news_api(name):
     # Fetch news API for the articles
     # associates with each name
     NEWS_API_ENDPOINT = 'https://newsapi.ai/api/v1/article/getArticles'
-    NEWS_API_KEY = config['NEWS_API_KEY']
+    NEWS_API_KEY = get_secret('cs580-news-apikey')
     logger.info('-- Fetching news API')
     # call API
     res = requests.post(
@@ -78,12 +75,11 @@ def query_news_api(name):
 # Returns an array with the articles that are not already stored
 def filter_existing_articles(articles):
     # connect to the database
-    acs = config['AZURE_SQL_CONNECTIONSTRING']
     db_articles = set()
     get_articles_query = 'SELECT id FROM articles'
     # store the id of all the newly fetched articles
     new_articles = set([x['id'] for x in articles])
-    with get_conn(acs) as conn:
+    with get_conn() as conn:
         cursor = conn.cursor()
         # get all the articles form the articles table
         cursor.execute(get_articles_query)
@@ -102,12 +98,11 @@ def store_news_articles(articles):
     logger.info('Storing the articles for the case in the database.')
     # get the list of the articles fetched that do not yet exist in the database
     net_new_articles = filter_existing_articles(articles)
-    acs = config['AZURE_SQL_CONNECTIONSTRING']
     # store the net new articles in the database
     insert_article_query = (
         'insert into articles(id, victim_name, title, publication_date, source, body) values (?, ?, ?, ?, ?, ?);'
     )
-    with get_conn(acs) as conn:
+    with get_conn() as conn:
         cursor = conn.cursor()
         for article in net_new_articles:
             # create a new entry in the DB for a new article
@@ -128,10 +123,9 @@ def store_news_articles(articles):
 def fetch_articles_from_db(name):
     logger.info('Fetching the articles for the case from the database.')
     # query the DB to retrieve the news article
-    acs = config['AZURE_SQL_CONNECTIONSTRING']
     db_articles = []
     select_articles_query = 'SELECT title, body, publication_date FROM articles WHERE victim_name = ?;'
-    with get_conn(acs) as conn:
+    with get_conn() as conn:
         cursor = conn.cursor()
         # create a new entry in the DB for a new article
         cursor.execute(select_articles_query, name)
@@ -164,9 +158,8 @@ def process_data(articles) -> Dict | None:
 
 def check_existing_case(case_metadata):
     logger.info('Checking for matching existing case in the database')
-    acs = config['AZURE_SQL_CONNECTIONSTRING']
     check_query = 'SELECT id FROM cases WHERE victim_name LIKE ? AND missing_date = ?;'
-    with get_conn(acs) as conn:
+    with get_conn() as conn:
         cursor = conn.cursor()
         logger.info(f'Case metadata we are checking against {case_metadata}')
         cursor.execute(check_query, f"%{case_metadata["victim_name"]}%", case_metadata['date_last_seen'])
@@ -178,9 +171,8 @@ def check_existing_case(case_metadata):
 # Store extracted info to DB
 def store_case_summary(case_metadata):
     logger.info('Storing extracted Open AI info')
-    acs = config['AZURE_SQL_CONNECTIONSTRING']
     # store the net new articles in the database
-    with get_conn(acs) as conn:
+    with get_conn() as conn:
         cursor = conn.cursor()
         existing_entry_id = check_existing_case(case_metadata)
         # decide if we should update or insert a new row in the cases table
