@@ -109,7 +109,7 @@ def main():
     # Only schedule if running in the ADO pipelines
     if ci_cd:
         schedule_name = 'cse580-pipeline_schedule'
-        cron_exp = '0 19 * * *'  # 7PM UTC = 12PM PDT = 11AM PST - 2 hours after UIF
+        cron_exp = '0 */12 * * *'  # 7PM UTC = 12PM PDT = 11AM PST - 2 hours after UIF
         schedule_start_time = datetime.now()
         cron_trigger = CronTrigger(
             expression=cron_exp,
