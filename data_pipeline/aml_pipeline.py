@@ -4,12 +4,11 @@ import os
 import sys
 from datetime import datetime
 
-from azure.ai.ml import MLClient, Output, command, dsl
+from azure.ai.ml import Input, MLClient, Output, command, dsl
 from azure.ai.ml.constants import AssetTypes, InputOutputModes, TimeZone
 from azure.ai.ml.entities import (
     CronTrigger,
     Environment,
-    Input,
     JobSchedule,
 )
 from azureml.core.conda_dependencies import CondaDependencies
