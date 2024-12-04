@@ -14,9 +14,9 @@ logger = logging.getLogger('cse580-process-data')
 
 
 class OpenAIProcessor:
-    domain = config['OPEN_AI_API_BASE']
-    model_name = config['OPEN_AI_DEPLOYMENT_NAME']
-    api_version = config['OPEN_AI_API_VERSION']
+    domain = config.OPEN_AI_API_BASE
+    model_name = config.OPEN_AI_DEPLOYMENT_NAME
+    api_version = config.OPEN_AI_API_VERSION
     api_key = get_secret('cse580-oaikey')
 
     endpoint = f'{domain}/openai/deployments/{model_name}/chat/completions?api-version={api_version}'
@@ -29,7 +29,10 @@ class OpenAIProcessor:
     def summarize_case_info_from_articles(self, prompt, articles):
         # Request payload
         data = {
-            'messages': [{'role': 'system', 'content': prompt}, {'role': 'user', 'content': articles}],
+            'messages': [
+                {'role': 'system', 'content': prompt},
+                {'role': 'user', 'content': articles},
+            ],
             # Controls the randomness of the response
             # 0.0 - deterministic, 1.0 - creative/random responses
             'temperature': 0.3,
