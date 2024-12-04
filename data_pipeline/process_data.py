@@ -20,7 +20,7 @@ logger = logging.getLogger('cse580-process-data')
 logger.setLevel(logging.INFO)
 
 if os.getenv('ENVIRONMENT', '') == 'PRODUCTION':
-    os.environ['PATH'] += '/opt/mssql-tools18/bin'
+    os.environ['PATH'] += ':/opt/mssql-tools18/bin'
 
     logger.info(os.getenv('PATH', 'EMPTY'))
 

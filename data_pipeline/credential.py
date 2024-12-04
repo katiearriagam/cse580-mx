@@ -8,8 +8,6 @@ sys.path.append(os.path.join(sys.path[0], '../..'))
 from config import auto_config as config
 
 is_pipelines = os.environ.get('AZURE_PIPELINES', None) == 'true'
-if is_pipelines:
-    logging.root.setLevel(logging.DEBUG)
 
 
 def get_credential():
