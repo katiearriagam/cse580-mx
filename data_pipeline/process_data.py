@@ -1,3 +1,4 @@
+import argparse
 import json
 import logging
 import os
@@ -23,6 +24,10 @@ if os.getenv('ENVIRONMENT', '') == 'PRODUCTION':
     os.environ['PATH'] += ':/opt/mssql-tools18/bin'
 
     logger.info(os.getenv('PATH', 'EMPTY'))
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--input')
+args = parser.parse_args()
 
 
 def query_news_api(name):
@@ -230,9 +235,21 @@ def process_name(name):
         store_case_summary(case_summary)
 
 
+def get_names():
+    names = []
+    with open(args.input, 'r', encoding='utf-8') as f:
+        names = f.readlines()
+    return names
+
+
 def run_pipeline():
-    LIST_OF_NAMES = ['Bertha Guadalupe Cipriano']
-    for name in LIST_OF_NAMES:
+    list_of_names = get_names()
+    lnl = len(list_of_names)
+    logger.info(f'Read {lnl} from input file.')
+    if lnl == 0:
+        logger.info('Read 0 names, stopping.')
+        return
+    for name in list_of_names:
         process_name(name)
 
 
