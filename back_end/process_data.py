@@ -188,7 +188,7 @@ def store_case_summary(case_metadata):
         if existing_entry_id is None:
             logger.info('-- Creating a new row')
             # insert query using parameterized SQL
-            insert_query = f'INSERT INTO cases (victim_name, missing_date, case_location, case_coordinates_latitude, case_coordinates_longitude, relationship_with_aggressor, case_status, victim_outcome, summary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);'
+            insert_query = 'INSERT INTO cases (victim_name, missing_date, case_location, case_coordinates_latitude, case_coordinates_longitude, relationship_with_aggressor, case_status, victim_outcome, summary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);'
             # create a new entry in the DB for a new case
             cursor.execute(
                 insert_query,

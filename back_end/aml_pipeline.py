@@ -1,4 +1,3 @@
-# rqv_aml_pipeline.py
 import argparse
 import logging
 import os
@@ -11,6 +10,7 @@ from azure.ai.ml.entities import (
     CronTrigger,
     JobSchedule,
 )
+
 # from azureml.core.conda_dependencies import CondaDependencies
 
 sys.path.append(os.path.join(sys.path[0], '..'))
@@ -46,13 +46,13 @@ ml_client = MLClient(
 )
 # TODO: probably move to config
 # compute_env_name = 'uifanalysis'
-compute_name = f'katiearriaga1'
+compute_name = 'katiearriaga1'
 
 
 @dsl.pipeline(description='cse580-pipeline')
 def cse580_pipeline():
     command_job = command(
-        code='.', # this will be automatically uploaded to the machine when the job runs
+        code='.',  # this will be automatically uploaded to the machine when the job runs
         command='python process_data.py',
         # environment=f'{compute_env_name}@latest',
         # environment_variables={'ENVIRONMENT': environment,},
@@ -64,7 +64,6 @@ def cse580_pipeline():
     pjob = command_job()
 
     return {'pipeline_job_output_data': pjob.outputs.output_data}
-
 
 
 def main():
@@ -95,7 +94,7 @@ def main():
     else:
         # Run the pipeline
         pipeline_result = ml_client.jobs.create_or_update(
-            pipeline_job,   
+            pipeline_job,
             experiment_name='cse580-pipeline_job',
         )
         # Stream the logs into stdout

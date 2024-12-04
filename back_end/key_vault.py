@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 
 from azure.keyvault.secrets import SecretClient
 
