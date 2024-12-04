@@ -11,6 +11,9 @@ class Config:
     OPEN_AI_DEPLOYMENT_NAME = "gpt-4o-mini"
     OPEN_AI_API_VERSION = "2024-02-15-preview"
 
+    # KV
+    KEY_VAULT_URL='https://cse580aml8823189492.vault.azure.net/'
+
 auto_config = Config
 # from config.production import Production
 # from config.staging import Staging
