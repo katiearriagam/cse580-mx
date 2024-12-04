@@ -5,6 +5,11 @@ class Config:
     AZUREML_SUBSCRIPTION_ID='8378cdae-99bb-4974-9dbb-749522a1de76'
     AZUREML_RESOURCE_GROUP='cse580'
     AZUREML_WORKSPACE_NAME='cse580-aml'
+    
+    # Open AI
+    OPEN_AI_API_BASE = "https://cse580-cae-oai.openai.azure.com/"
+    OPEN_AI_DEPLOYMENT_NAME = "gpt-4o-mini"
+    OPEN_AI_API_VERSION = "2024-02-15-preview"
 
 auto_config = Config
 # from config.production import Production

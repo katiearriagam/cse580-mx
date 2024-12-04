@@ -1,17 +1,28 @@
 import requests
 import logging
 from dotenv import dotenv_values
+from config import auto_config as config
+
+
+def get_openai_secret():
+    return config["OPEN_AI_API_KEY"]
+
 
 logger = logging.getLogger('cse580-process-data')
 
 class OpenAIProcessor:
-    config = dotenv_values(".env")
-    endpoint = f"{config["OPEN_AI_API_BASE"]}/openai/deployments/{config["OPEN_AI_DEPLOYMENT_NAME"]}/chat/completions?api-version={config["OPEN_AI_API_VERSION"]}"
+    domain = config["OPEN_AI_API_BASE"]
+    model_name = config["OPEN_AI_DEPLOYMENT_NAME"]
+    api_version = config["OPEN_AI_API_VERSION"]
+    api_key = get_openai_secret()
+
+
+    endpoint = f"{domain}/openai/deployments/{model_name}/chat/completions?api-version={api_version}"
 
     # Request headers
     headers = {
         "Content-Type": "application/json",
-        "api-key": config["OPEN_AI_API_KEY"]
+        "api-key": api_key
     }
     # Method that calls the Open AI API with a prompt
     # and a list of articles, and gets the Open AI response
@@ -24,7 +35,7 @@ class OpenAIProcessor:
             ],
             # Controls the randomness of the response
             # 0.0 - deterministic, 1.0 - creative/random responses
-            "temperature": 0.7,
+            "temperature": 0.3,
             # Length of the generated responses
             "max_tokens": 300,
             # Nucleus sampling for response diversity - using default value

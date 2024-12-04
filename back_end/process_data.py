@@ -1,6 +1,7 @@
 import json
 import sys, os
 import logging
+from typing import Dict
 import requests
 from dotenv import dotenv_values
 
@@ -9,6 +10,7 @@ sys.path.append(os.path.join(sys.path[0], '..'))
 
 from back_end.open_ai_processor import OpenAIProcessor
 from db_storage import get_conn
+from config import auto_config as config2
 
 config = dotenv_values(".env")
 
@@ -128,24 +130,24 @@ def fetch_articles_from_db(name):
     return json.dumps(db_articles, ensure_ascii=False)
 
 # Extract info with GPT
-def process_data(articles):
+def process_data(articles) -> Dict | None:
     logger.info('Processing articles with Open AI')
     open_ai_processor = OpenAIProcessor()
     try:
         # open the file that contains the prompt
-        with open("coding_prompt.txt", "r") as file:
+        with open("coding_prompt.txt", "r") as f:
             # read the entire content of the file as a string
-            prompt = file.read()
+            prompt = f.read()
             logger.info(f'-- Calling Open AI to summarize the case.')
             case_summary = open_ai_processor.summarize_case_info_from_articles(prompt, articles)
             try:
-                case_summary_string_cleaned = case_summary.strip().replace('\n', '').replace('\r', '')
-                case_json = json.loads(case_summary_string_cleaned)
+                case_json = json.loads(case_summary)
                 return case_json
             except Exception as e:
                 logger.error(f'-- Error while converting the response to an object, {e}')
     except Exception as e:
         logger.error(f'-- Error while reading prompt, {e}')
+    return None
 
 
 def check_existing_case(case_metadata):
@@ -170,18 +172,41 @@ def store_case_summary(case_metadata):
         existing_entry_id = check_existing_case(case_metadata)
         # decide if we should update or insert a new row in the cases table
         # based on whether an entry for this case already exists
-        if existing_entry_id == None:
+        if existing_entry_id is None:
             logger.info('-- Creating a new row')
             # insert query using parameterized SQL
             insert_query = f"INSERT INTO cases (victim_name, missing_date, case_location, case_coordinates_latitude, case_coordinates_longitude, relationship_with_aggressor, case_status, victim_outcome, summary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
             # create a new entry in the DB for a new case
-            cursor.execute(insert_query, case_metadata["victim_name"], case_metadata["date_last_seen"], case_metadata["location"], case_metadata["coordinates"]["lat"], case_metadata["coordinates"]["long"], case_metadata["relationship_with_aggressor"], case_metadata["status"], case_metadata["victim_status"], case_metadata["summary"])
+            cursor.execute(
+                insert_query,
+                case_metadata["victim_name"],
+                case_metadata["date_last_seen"],
+                case_metadata["location"],
+                case_metadata["coordinates"]["lat"],
+                case_metadata["coordinates"]["long"],
+                case_metadata["relationship_with_aggressor"],
+                case_metadata["status"],
+                case_metadata["victim_status"],
+                case_metadata["summary"]
+            )
         else:
             logger.info('-- Updating existing row')
             # update query using parameterized SQL
             update_query = "UPDATE cases SET victim_name = ?, missing_date = ?, case_location = ?, case_coordinates_latitude = ?, case_coordinates_longitude = ?, relationship_with_aggressor = ?, case_status = ?, victim_outcome = ?, summary = ? WHERE id = ?;"
             # update the row for the existing case entry
-            cursor.execute(update_query, case_metadata["victim_name"], case_metadata["date_last_seen"], case_metadata["location"], case_metadata["coordinates"]["lat"], case_metadata["coordinates"]["long"], case_metadata["relationship_with_aggressor"], case_metadata["status"], case_metadata["victim_status"], case_metadata["summary"], existing_entry_id)
+            cursor.execute(
+                update_query,
+                case_metadata["victim_name"],
+                case_metadata["date_last_seen"],
+                case_metadata["location"],
+                case_metadata["coordinates"]["lat"],
+                case_metadata["coordinates"]["long"],
+                case_metadata["relationship_with_aggressor"],
+                case_metadata["status"],
+                case_metadata["victim_status"],
+                case_metadata["summary"],
+                existing_entry_id
+            )
         conn.commit()
 
 def process_name(name):
@@ -190,7 +215,7 @@ def process_name(name):
     store_news_articles(articles)
     articles_in_db = fetch_articles_from_db(name)
     case_summary = process_data(articles_in_db)
-    if case_summary != None:
+    if case_summary is not None:
         store_case_summary(case_summary)
     
     
@@ -199,19 +224,7 @@ def run_pipeline():
     for name in LIST_OF_NAMES:
         process_name(name)
 
-def test_db_connection():
-    query = 'SELECT * FROM cases;'
-    acs = config['AZURE_SQL_CONNECTIONSTRING']
-    rows = []
-    with get_conn(acs) as conn:
-        cursor = conn.cursor()
-        cursor.execute(query)
-        for row in cursor.fetchall():
-            print(row)
-
-
 def main():
-    # fetch_articles_from_db('Bertha Guadalupe Cipriano')
     run_pipeline()
     logger.info('Done')
 
