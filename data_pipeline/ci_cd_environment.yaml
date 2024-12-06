@@ -1,0 +1,27 @@
+# Conda environment specification. The dependencies defined in this file will
+# be automatically provisioned for runs with userManagedDependencies=False.
+
+# Details about the Conda environment file format:
+
+# https://conda.io/docs/user-guide/tasks/manage-environments.html#create-env-file-manually
+
+name: project_environment
+dependencies:
+  # The python interpreter version.
+
+  # Currently Azure ML only supports 3.8 and later.
+
+  - python=3.12.7
+
+  - pip:
+      - requests==2.32.3
+      - azure-identity==1.19.0
+      - azure-ai-ml==1.22.4
+      - pyodbc==5.2.0
+      - python-dotenv==1.0.1
+      - azure-keyvault==4.2.0
+      - ruff==0.8.0
+      - azureml-core~=1.58.0
+channels:
+  - anaconda
+  - conda-forge
