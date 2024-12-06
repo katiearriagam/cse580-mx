@@ -49,6 +49,12 @@ def query_news_api(name):
                             {'keyword': name},
                             {'lang': 'spa'},
                             {'sourceLocationUri': 'http://en.wikipedia.org/wiki/Mexico'},
+                            {
+                                '$or': [
+                                    {'keyword': 'muerta'},
+                                    {'keyword': 'desaparecida'},
+                                ]
+                            },
                         ]
                     },
                     '$filter': {'forceMaxDataTimeWindow': '31'},
