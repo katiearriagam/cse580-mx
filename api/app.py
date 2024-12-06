@@ -39,6 +39,7 @@ def get_cases_from_db():
                     'status': row[7],
                     'victim_outcome': row[8],
                     'summary': row[9],
+                    'meets_gender_violence_criteria': row[10],
                 }
             )
     return result

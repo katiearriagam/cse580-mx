@@ -37,7 +37,7 @@ class OpenAIProcessor:
             # 0.0 - deterministic, 1.0 - creative/random responses
             'temperature': 0.3,
             # Length of the generated responses
-            'max_tokens': 300,
+            'max_tokens': 800,
             # Nucleus sampling for response diversity - using default value
             'top_p': 0.95,
             # Penalizes repeated phrases in responses - no penalty for repetition

@@ -190,7 +190,7 @@ def store_case_summary(case_metadata):
         if existing_entry_id is None:
             logger.info('-- Creating a new row')
             # insert query using parameterized SQL
-            insert_query = 'INSERT INTO cases (victim_name, missing_date, case_location, case_coordinates_latitude, case_coordinates_longitude, relationship_with_aggressor, case_status, victim_outcome, summary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);'
+            insert_query = 'INSERT INTO cases (victim_name, missing_date, case_location, case_coordinates_latitude, case_coordinates_longitude, relationship_with_aggressor, case_status, victim_outcome, summary, meets_gender_violence_criteria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
             # create a new entry in the DB for a new case
             cursor.execute(
                 insert_query,
@@ -203,11 +203,12 @@ def store_case_summary(case_metadata):
                 case_metadata['status'],
                 case_metadata['victim_status'],
                 case_metadata['summary'],
+                case_metadata['meets_gender_violence_criteria'],
             )
         else:
             logger.info('-- Updating existing row')
             # update query using parameterized SQL
-            update_query = 'UPDATE cases SET victim_name = ?, missing_date = ?, case_location = ?, case_coordinates_latitude = ?, case_coordinates_longitude = ?, relationship_with_aggressor = ?, case_status = ?, victim_outcome = ?, summary = ? WHERE id = ?;'
+            update_query = 'UPDATE cases SET victim_name = ?, missing_date = ?, case_location = ?, case_coordinates_latitude = ?, case_coordinates_longitude = ?, relationship_with_aggressor = ?, case_status = ?, victim_outcome = ?, summary = ?, meets_gender_violence_criteria = ? WHERE id = ?;'
             # update the row for the existing case entry
             cursor.execute(
                 update_query,
@@ -220,6 +221,7 @@ def store_case_summary(case_metadata):
                 case_metadata['status'],
                 case_metadata['victim_status'],
                 case_metadata['summary'],
+                case_metadata['meets_gender_violence_criteria'],
                 existing_entry_id,
             )
         conn.commit()
