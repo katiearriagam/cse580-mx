@@ -6,6 +6,7 @@ interface Coordinate {
   lat: number;
   lng: number;
   label?: string;
+  // criteria?: string;
 }
 
 interface MapComponentProps {
