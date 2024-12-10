@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fluentui/react-components": "^9.56.5",
     "@types/jest": "^27.5.2",
     "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^16.18.119",
