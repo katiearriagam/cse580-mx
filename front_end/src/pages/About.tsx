@@ -60,15 +60,6 @@ const AboutPage: React.FC = () => {
           </li>
         </ol>
       </section>
-
-      <section className="about-page__section about-page__data-pipeline">
-        <h2 className="about-page__heading">Data processing</h2>
-        <p className="about-page__text">
-          The data pipeline processes data seamlessly from source to analysis,
-          leveraging state-of-the-art technologies.
-        </p>
-      </section>
-
       <section className="about-page__section about-page__collaborators">
         <h2 className="about-page__heading">Collaborators</h2>
         <div className="about-page__collaborators-container">
